@@ -13,8 +13,8 @@ class Number(models.Model):
     number = models.IntegerField(unique=True)
     password = models.CharField(max_length=200)
     forwarding = models.IntegerField(blank=True, null=True)
-    balance = models.FloatField()
-    max_balance = models.FloatField()
+    balance = models.FloatField(default=0)
+    max_balance = models.FloatField(default=0)
     comment = models.TextField(blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
