@@ -9,6 +9,11 @@ class DelNumber(models.Model):
     date_del = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
+class Code(models.Model):
+    number = models.IntegerField(unique=True)
+    code = models.CharField(max_length=200)
+
+
 class Number(models.Model):
     number = models.IntegerField(unique=True)
     password = models.CharField(max_length=200)
