@@ -57,3 +57,5 @@ class Setting(models.Model):
     poplni_login = models.CharField(max_length=200)
     poplni_password = models.CharField(max_length=200)
     captcha_guru = models.CharField(max_length=300)
+    poplni_balance = models.FloatField(default=0)
+    captcha_balance = models.FloatField(default=0)
