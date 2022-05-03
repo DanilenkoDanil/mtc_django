@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import NumberViewSet, SettingViewSet, PaymentAPIView, LogAPIView, DelNumberAPIView, \
-    GetCodeAPIView, SendCodeAPIView, ChangeCommentAPIView, UserViewSet, PermissionAPIView
+    GetCodeAPIView, SendCodeAPIView, ChangeCommentAPIView, UserViewSet, PermissionAPIView, CheckAccountAPIView
 
 
 router = DefaultRouter()
@@ -17,6 +17,6 @@ urlpatterns = [
     path('send-code/', SendCodeAPIView.as_view(), name='send-code'),
     path('change-comment/', ChangeCommentAPIView.as_view(), name='send-code'),
     path('permissions/', PermissionAPIView.as_view(), name='permissions'),
-
+    path('check-account/', CheckAccountAPIView.as_view(), name='check-account'),
     path('', include(router.urls))
 ]

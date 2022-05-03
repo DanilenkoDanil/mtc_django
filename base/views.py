@@ -88,3 +88,24 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAdminUser]
     queryset = User.objects.all()
+
+
+class CheckAccountAPIView(generics.CreateAPIView):
+
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        login = request.data.get('login')
+        password = request.data.get('password')
+        if login is None or password is None:
+            return Response(f"Параметры login, password обязательны", status=status.HTTP_404_NOT_FOUND)
+        try:
+            user = User.objects.get(username=login)
+            print(user)
+            print(password)
+            print(user.check_password(password))
+            if not user.check_password(password):
+                return Response(f"Не подходит логин или пароль", status=status.HTTP_404_NOT_FOUND)
+        except User.DoesNotExist:
+            return Response(f"Не подходит логин или пароль", status=status.HTTP_404_NOT_FOUND)
+
+        return Response(f"Логин и пароль верны", status=status.HTTP_200_OK)
