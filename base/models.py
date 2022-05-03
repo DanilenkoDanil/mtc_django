@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class DelNumber(models.Model):
@@ -7,6 +8,11 @@ class DelNumber(models.Model):
     comment = models.TextField(blank=True, null=True)
     date_create = models.DateTimeField()
     date_del = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+
+class UserRight(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    right = models.CharField(max_length=200)
 
 
 class Code(models.Model):

@@ -1,35 +1,50 @@
 from rest_framework import viewsets, status, generics, permissions, views
-from .serializers import NumberSerializer, SettingSerializer, LogSerializer, DelNumberSerializer, PaymentSerializer
+from .serializers import NumberSerializer, SettingSerializer, LogSerializer, DelNumberSerializer, \
+    PaymentSerializer, UserSerializer, PermissionSerializer
 from .models import Number, Setting, Log, DelNumber, Payment
 from rest_framework.response import Response
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 
 
 class NumberViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = NumberSerializer
     queryset = Number.objects.all()
 
 
 class SettingViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = SettingSerializer
     queryset = Setting.objects.all()
 
 
 class LogAPIView(generics.ListAPIView):
+    permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = LogSerializer
     queryset = Log.objects.all()
 
 
 class DelNumberAPIView(generics.ListAPIView):
+    permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = DelNumberSerializer
     queryset = DelNumber.objects.all()
 
 
+class PermissionAPIView(generics.ListAPIView):
+    permission_classes = [permissions.DjangoModelPermissions]
+    serializer_class = PermissionSerializer
+    queryset = Permission.objects.all()
+
+
 class PaymentAPIView(generics.ListAPIView):
+    permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
 
 
 class GetCodeAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAdminUser]
 
     def retrieve(self, request, *args, **kwargs):
         number = request.query_params.get('number')
@@ -39,6 +54,7 @@ class GetCodeAPIView(generics.RetrieveAPIView):
 
 
 class SendCodeAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAdminUser]
 
     def retrieve(self, request, *args, **kwargs):
         code = request.query_params.get('code')
@@ -48,6 +64,7 @@ class SendCodeAPIView(generics.RetrieveAPIView):
 
 
 class ChangeCommentAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAdminUser]
 
     def retrieve(self, request, *args, **kwargs):
         comment = request.query_params.get('comment')
@@ -65,3 +82,9 @@ class ChangeCommentAPIView(generics.RetrieveAPIView):
             return Response(f"Такой номер не найден в удалённых", status=status.HTTP_400_BAD_REQUEST)
 
         return Response(f"Коментарий принят", status=status.HTTP_201_CREATED)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
+    queryset = User.objects.all()
