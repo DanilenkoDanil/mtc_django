@@ -93,16 +93,12 @@ class UserViewSet(viewsets.ModelViewSet):
 class CheckAccountAPIView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
         login = request.data.get('login')
         password = request.data.get('password')
         if login is None or password is None:
             return Response(f"Параметры login, password обязательны", status=status.HTTP_404_NOT_FOUND)
         try:
             user = User.objects.get(username=login)
-            print(user)
-            print(password)
-            print(user.check_password(password))
             if not user.check_password(password):
                 return Response(f"Не подходит логин или пароль", status=status.HTTP_404_NOT_FOUND)
         except User.DoesNotExist:
