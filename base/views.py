@@ -57,6 +57,7 @@ class PaymentAPIView(generics.ListAPIView):
 
 
 class GetCodeAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
         number = request.query_params.get('number')
@@ -66,6 +67,7 @@ class GetCodeAPIView(generics.RetrieveAPIView):
 
 
 class SendCodeAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
         code = request.query_params.get('code')
@@ -75,6 +77,7 @@ class SendCodeAPIView(generics.RetrieveAPIView):
 
 
 class ChangeCommentAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
         comment = request.query_params.get('comment')
