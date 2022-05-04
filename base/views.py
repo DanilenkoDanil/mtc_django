@@ -5,46 +5,58 @@ from .models import Number, Setting, Log, DelNumber, Payment
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
+from rest_framework.permissions import DjangoModelPermissions
+
+
+class AllDjangoModelPermissions(DjangoModelPermissions):
+    perms_map = {
+        'GET': ['%(app_label)s.view_%(model_name)s'],
+        'OPTIONS': [],
+        'HEAD': [],
+        'POST': ['%(app_label)s.add_%(model_name)s'],
+        'PUT': ['%(app_label)s.change_%(model_name)s'],
+        'PATCH': ['%(app_label)s.change_%(model_name)s'],
+        'DELETE': ['%(app_label)s.delete_%(model_name)s'],
+    }
 
 
 class NumberViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [AllDjangoModelPermissions]
     serializer_class = NumberSerializer
     queryset = Number.objects.all()
 
 
 class SettingViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [AllDjangoModelPermissions]
     serializer_class = SettingSerializer
     queryset = Setting.objects.all()
 
 
 class LogAPIView(generics.ListAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [AllDjangoModelPermissions]
     serializer_class = LogSerializer
     queryset = Log.objects.all()
 
 
 class DelNumberAPIView(generics.ListAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [AllDjangoModelPermissions]
     serializer_class = DelNumberSerializer
     queryset = DelNumber.objects.all()
 
 
 class PermissionAPIView(generics.ListAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [AllDjangoModelPermissions]
     serializer_class = PermissionSerializer
     queryset = Permission.objects.all()
 
 
 class PaymentAPIView(generics.ListAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [AllDjangoModelPermissions]
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
 
 
 class GetCodeAPIView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAdminUser]
 
     def retrieve(self, request, *args, **kwargs):
         number = request.query_params.get('number')
@@ -54,7 +66,6 @@ class GetCodeAPIView(generics.RetrieveAPIView):
 
 
 class SendCodeAPIView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAdminUser]
 
     def retrieve(self, request, *args, **kwargs):
         code = request.query_params.get('code')
@@ -64,7 +75,6 @@ class SendCodeAPIView(generics.RetrieveAPIView):
 
 
 class ChangeCommentAPIView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAdminUser]
 
     def retrieve(self, request, *args, **kwargs):
         comment = request.query_params.get('comment')
@@ -86,11 +96,12 @@ class ChangeCommentAPIView(generics.RetrieveAPIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [AllDjangoModelPermissions]
     queryset = User.objects.all()
 
 
 class CheckAccountAPIView(generics.CreateAPIView):
+    queryset = User.objects.all()
 
     def create(self, request, *args, **kwargs):
         login = request.data.get('login')
@@ -104,4 +115,4 @@ class CheckAccountAPIView(generics.CreateAPIView):
         except User.DoesNotExist:
             return Response(f"Не подходит логин или пароль", status=status.HTTP_404_NOT_FOUND)
 
-        return Response(f"Логин и пароль верны", status=status.HTTP_200_OK)
+        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
