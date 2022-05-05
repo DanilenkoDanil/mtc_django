@@ -54,5 +54,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['username'], None, validated_data['password'])
-
+        perms = validated_data.get('user_permissions')
+        print(perms)
+        if perms is not None:
+            user.user_permissions.set(perms)
+            user.save()
         return user
